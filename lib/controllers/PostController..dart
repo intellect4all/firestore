@@ -9,6 +9,7 @@ class PostController extends GetxController {
 
   @override
   void onInit() {
+    
     super.onInit();
   }
 
@@ -29,7 +30,7 @@ class PostController extends GetxController {
   void getPost() async {
     CollectionReference postss = _firebase.collection('posts');
     Get.snackbar('Loading', 'We are getting data from the server', showProgressIndicator: true, snackPosition: SnackPosition.BOTTOM);
-    await postss.orderBy('timestamp').get().then(
+    await postss.get().then(
         (QuerySnapshot querySnapshot) => querySnapshot.docs.forEach((doc) {
               Post post = Post.fromSnapshot(doc);
               this.addPost(post);
