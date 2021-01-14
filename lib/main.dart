@@ -3,7 +3,6 @@ import 'package:firestore/controllers/AuthController.dart';
 import 'package:firestore/controllers/bindings/authBinding.dart';
 import 'package:firestore/root.dart';
 import 'package:firestore/views/authentication/login.dart';
-import 'package:firestore/views/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,6 +25,7 @@ class MyApp extends StatelessWidget {
       ),
       initialBinding: AuthBinder(),
       home: Root(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

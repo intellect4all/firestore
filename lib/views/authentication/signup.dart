@@ -11,9 +11,7 @@ class SignUp extends GetWidget<AuthController> {
   
   @override
   Widget build(BuildContext context) {
-    if (controller.loading == RxBool(true)) {
-      return Loader();
-    } else { return 
+    return 
       Scaffold(
         appBar: AppBar(
           title: Text('Sign Up'),
@@ -46,9 +44,10 @@ class SignUp extends GetWidget<AuthController> {
             ),
             RaisedButton(
               onPressed: () async {
-                controller.loading = RxBool(true);
                 controller.signUp(
                     emailController.text, passwordController.text);
+                emailController.clear();
+                passwordController.clear();
               },
               child: Text(
                 'SignUp',
@@ -68,5 +67,5 @@ class SignUp extends GetWidget<AuthController> {
         ),
       );
     }
-  }
+  
 }

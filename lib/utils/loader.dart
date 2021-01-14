@@ -9,7 +9,6 @@ class Loader extends StatelessWidget {
       child: SpinKitFadingCircle(
         color: Colors.deepOrange,
         size: 60,
-        
       ),
     );
   }

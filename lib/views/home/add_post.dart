@@ -18,6 +18,8 @@ class AddPost extends StatelessWidget {
         ),
         body: Container(
           width: double.infinity,
+          margin: EdgeInsets.all(20),
+          padding: EdgeInsets.symmetric(vertical: 10),
           child: Column(children: [
             TextField(
               controller: titleController,
@@ -50,8 +52,8 @@ class AddPost extends StatelessWidget {
               onPressed: () {
                 postController.uploadPost(
                     titleController.text, contentController.text);
-                titleController.text = '';
-                contentController.text = '';
+                titleController.clear();
+                contentController.clear();
               },
               child: Text(
                 'Post',
