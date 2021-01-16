@@ -1,5 +1,6 @@
 import 'package:firestore/controllers/AuthController.dart';
 import 'package:firestore/controllers/PostController..dart';
+import 'package:firestore/utils/loader.dart';
 import 'package:firestore/views/home/add_post.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,64 +37,42 @@ class Home extends StatelessWidget {
           children: [
             RaisedButton(
               onPressed: () {
-                postController.getPost();
+                postController.fetchData();
               },
               child: Text('Fetch One Data'),
             ),
             RaisedButton(
-              onPressed: () {
-                postController.addPosts();
-              },
+              onPressed: () {},
               child: Text('Fetch multiple data'),
             ),
-            Card(
-              margin: EdgeInsets.all(10),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Row(children: [
-                      (postController.posts.isEmpty)
-                          ? Text('Sample')
-                          : Text(postController.posts[0].title),
-                    ]),
-                    Row(
-                      children: [
-                        (postController.posts.isEmpty)
-                            ? Text('testss')
-                            : Text(postController.posts[0].content),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-            (postController.posts.isEmpty) ? Text('Nothing to show') :Expanded(
-                          child: ListView.builder(
-                itemCount: postController.posts.length,
-                itemBuilder: (context, index){
-                  return Card(
-                margin: EdgeInsets.all(10),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Row(children: [
-                        Text(postController.posts[index].title),
-                      ]),
-                      Row(
-                        children: [
-                         Text(postController.posts[index].content),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              );
-                },
-              ),
-            )
-          ],
+            
+            Obx(() => ((postController.isloadingPosts.value == true) ? Loader() : Expanded(
+                    child: ListView.builder(
+
+                      itemCount: postController.posts.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          margin: EdgeInsets.all(10),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              children: [
+                                Row(children: [
+                                  Text(postController.posts[index].title),
+                                ]),
+                                Row(
+                                  children: [
+                                    Text(postController.posts[index].content),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ))
+)          ],
         ),
       ),
     );

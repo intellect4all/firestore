@@ -5,10 +5,12 @@ class Post {
   String title;
   String content;
   var timestamp;
+  static final list = <Post>[];
 
   Post({this.id, this.title, this.content, this.timestamp});
+  
 
-  factory Post.fromSnapshot(DocumentSnapshot snap) {
+  factory Post.fromSnapshot(QueryDocumentSnapshot snap) {
     return Post(
         id: snap.data()["id"],
         title: snap.data()["title"],
@@ -16,5 +18,4 @@ class Post {
         timestamp: snap.data()['timestamp']
         );
   }
-  
 }

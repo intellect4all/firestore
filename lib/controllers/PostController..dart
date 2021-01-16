@@ -1,51 +1,55 @@
+import 'dart:async';
+
 import 'package:firestore/models/post.dart';
+import 'package:firestore/services/postServices.dart';
+import 'package:firestore/views/home/home.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostController extends GetxController {
-  final _firebase = FirebaseFirestore.instance;
-  final posts = [].obs;
-  
+  PostServices _postServices = PostServices();
+  RxList posts = <Post>[].obs;
+  RxBool isAddingPosts = false.obs;
+  RxBool isloadingPosts = false.obs;
+  StreamSubscription _listener;
 
   @override
-  void onInit() {
-    
+  void onInit() async {
     super.onInit();
+    fetchData();
+    print('starting initializing');
   }
+
+  @override
+  void onClose() {}
 
   void uploadPost(String title, String content) async {
-    CollectionReference postss = _firebase.collection('posts');
-    try {
-      await postss.add({
-        'title': title,
-        'content': content,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-      Get.snackbar('Done', 'Article Published successfully');
-    } catch (e) {
-      Get.snackbar('Error', 'Unable to post at this moment. Please try again');
-    }
+    isAddingPosts.value = true;
+    await _postServices.addPost(
+      title,
+      content,
+    );
+    isAddingPosts.value = false;
+    Get.back();
+    Get.snackbar('Done', 'Article Successfully posted!',
+        snackPosition: SnackPosition.BOTTOM);
   }
 
-  void getPost() async {
-    CollectionReference postss = _firebase.collection('posts');
-    Get.snackbar('Loading', 'We are getting data from the server', showProgressIndicator: true, snackPosition: SnackPosition.BOTTOM);
-    await postss.get().then(
-        (QuerySnapshot querySnapshot) => querySnapshot.docs.forEach((doc) {
-              Post post = Post.fromSnapshot(doc);
-              this.addPost(post);
-              
-            }));
-    await Future.delayed(Duration(seconds: 5));
-    Get.snackbar('Done', 'Here is the data', snackPosition: SnackPosition.BOTTOM);
-  }
-
-  void addPost(Post post) {
-    posts.add(post);
-  }
-
-  void addPosts() async {
-    CollectionReference postss = _firebase.collection('posts');
-    QuerySnapshot snapshot = await postss.get();
+  Future<void> fetchData() async {
+    isloadingPosts.value = true;
+    _listener = _postServices.getPost().snapshots().listen(
+      (event) {
+        posts.assignAll(
+            event.docs.map((doc) => Post.fromSnapshot(doc)).toList());
+        
+      },
+      
+    );
+    await Future.delayed(Duration(seconds: 2));
+    isloadingPosts.value = false;
+    // print('calling done');
+    // for (var post in posts) {
+    //   print(post.content);
+    // }
   }
 }
